@@ -1,105 +1,64 @@
-import requests
-import json
 import re
-import sys
 from datetime import datetime
 
-USERNAME = "ayomiolutoye"  # 🔁 Change this to your TryHackMe username
+# ✏️ UPDATE THESE MANUALLY whenever you complete new rooms or earn badges
+USERNAME = "ayomiolutoye"
+POINTS = 34
+STREAK = 80
+RANK = "Hacker"  # Your TryHackMe rank title e.g. "Hacker", "Pro Hacker" etc.
 
-def fetch_thm_profile(username):
-    """Fetch public profile data from TryHackMe API endpoints."""
-    base = "https://tryhackme.com"
-    headers = {"User-Agent": "Mozilla/5.0"}
+COMPLETED_ROOMS = [
+    {"title": "SQL Fundamentals", "url": "https://tryhackme.com/room/sqlfundamentals"},
+    # Add more rooms below as you complete them:
+    # {"title": "Room Name", "url": "https://tryhackme.com/room/roomcode"},
+]
 
-    data = {
-        "username": username,
-        "points": "N/A",
-        "rank": "N/A",
-        "streak": "N/A",
-        "completed_rooms": [],
-        "badges": [],
-        "skills": [],
-        "last_updated": datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC"),
-    }
+BADGES = [
+    # Add your badges here as you earn them:
+    # "7 Day Streak", "Advent of Cyber", etc.
+]
 
-    # --- User stats ---
-    try:
-        r = requests.get(f"{base}/api/user/rank/{username}", headers=headers, timeout=10)
-        if r.status_code == 200:
-            stats = r.json()
-            data["points"] = stats.get("points", "N/A")
-            data["rank"] = stats.get("userRank", "N/A")
-    except Exception as e:
-        print(f"[WARN] Could not fetch rank: {e}")
+SKILLS = [
+    "SQL",
+    # Add skills as you learn them e.g. "Linux", "Networking", "Web Hacking"
+]
 
-    # --- Streak ---
-    try:
-        r = requests.get(f"{base}/api/user/streak/{username}", headers=headers, timeout=10)
-        if r.status_code == 200:
-            streak_data = r.json()
-            data["streak"] = streak_data.get("currentStreak", "N/A")
-    except Exception as e:
-        print(f"[WARN] Could not fetch streak: {e}")
-
-    # --- Completed rooms ---
-    try:
-        r = requests.get(f"{base}/api/no-auth/get-rooms-completed-public/{username}", headers=headers, timeout=10)
-        if r.status_code == 200:
-            rooms = r.json()
-            data["completed_rooms"] = [
-                {"title": room.get("title", "Unknown"), "url": f"https://tryhackme.com/room/{room.get('code', '')}"}
-                for room in (rooms if isinstance(rooms, list) else [])
-            ]
-    except Exception as e:
-        print(f"[WARN] Could not fetch completed rooms: {e}")
-
-    # --- Badges ---
-    try:
-        r = requests.get(f"{base}/api/no-auth/get-badges-public/{username}", headers=headers, timeout=10)
-        if r.status_code == 200:
-            badges = r.json()
-            data["badges"] = [
-                badge.get("name", "Unknown")
-                for badge in (badges if isinstance(badges, list) else [])
-            ]
-    except Exception as e:
-        print(f"[WARN] Could not fetch badges: {e}")
-
-    return data
-
-
-def build_readme_section(data):
-    """Build the markdown block to inject into README.md."""
+def build_readme_section():
     rooms_md = "\n".join(
-        [f"- [{r['title']}]({r['url']})" for r in data["completed_rooms"][:20]]  # cap at 20 for readability
-    ) or "_No rooms found or profile is private._"
+        [f"- [{r['title']}]({r['url']})" for r in COMPLETED_ROOMS]
+    ) or "_No rooms yet._"
 
-    badges_md = ", ".join(data["badges"]) if data["badges"] else "_No badges yet._"
+    badges_md = "\n".join([f"- {b}" for b in BADGES]) or "_No badges yet._"
+    skills_md = ", ".join(SKILLS) or "_No skills listed yet._"
+    last_updated = datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
 
     section = f"""<!-- THM-STATS:START -->
 ## 🛡️ TryHackMe Progress
 
 | Stat | Value |
 |------|-------|
-| 🏆 Rank | {data['rank']} |
-| 💰 Points | {data['points']} |
-| 🔥 Current Streak | {data['streak']} days |
-| ✅ Rooms Completed | {len(data['completed_rooms'])} |
+| 👤 Username | [{USERNAME}](https://tryhackme.com/p/{USERNAME}) |
+| 🏆 Rank | {RANK} |
+| 💰 Points | {POINTS} |
+| 🔥 Current Streak | {STREAK} days |
+| ✅ Rooms Completed | {len(COMPLETED_ROOMS)} |
 
 ### 🎖️ Badges Earned
 {badges_md}
 
-### 📚 Completed Rooms (latest 20)
+### 🧠 Skills Gained
+{skills_md}
+
+### 📚 Completed Rooms
 {rooms_md}
 
-> _Last updated: {data['last_updated']}_
+> _Last updated: {last_updated}_
 <!-- THM-STATS:END -->"""
 
     return section
 
 
 def update_readme(section, readme_path="README.md"):
-    """Replace the THM stats block in the README, or append it."""
     try:
         with open(readme_path, "r", encoding="utf-8") as f:
             content = f.read()
@@ -119,8 +78,5 @@ def update_readme(section, readme_path="README.md"):
 
 
 if __name__ == "__main__":
-    print(f"🔍 Fetching TryHackMe data for: {USERNAME}")
-    profile_data = fetch_thm_profile(USERNAME)
-    print(json.dumps(profile_data, indent=2))
-    section = build_readme_section(profile_data)
+    section = build_readme_section()
     update_readme(section)
