@@ -7,16 +7,20 @@ Tracking my cybersecurity learning journey
 
 | Stat | Value |
 |------|-------|
-| 🏆 Rank | N/A |
-| 💰 Points | N/A |
-| 🔥 Current Streak | N/A days |
-| ✅ Rooms Completed | 0 |
+| 👤 Username | [ayomiolutoye](https://tryhackme.com/p/ayomiolutoye) |
+| 🏆 Rank | Hacker |
+| 💰 Points | 34 |
+| 🔥 Current Streak | 80 days |
+| ✅ Rooms Completed | 1 |
 
 ### 🎖️ Badges Earned
 _No badges yet._
 
-### 📚 Completed Rooms (latest 20)
-_No rooms found or profile is private._
+### 🧠 Skills Gained
+SQL
 
-> _Last updated: 2026-06-26 02:18 UTC_
+### 📚 Completed Rooms
+- [SQL Fundamentals](https://tryhackme.com/room/sqlfundamentals)
+
+> _Last updated: 2026-06-26 02:26 UTC_
 <!-- THM-STATS:END -->
