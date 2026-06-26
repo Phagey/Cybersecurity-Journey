@@ -1,0 +1,36 @@
+name: 🛡️ Update TryHackMe Progress
+
+on:
+  schedule:
+    - cron: "0 0 * * *"   # Runs daily at midnight UTC
+  workflow_dispatch:        # Also allows manual trigger from GitHub UI
+
+jobs:
+  update-thm-stats:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write       # Needed to commit back to the repo
+
+    steps:
+      - name: 📥 Checkout repo
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 📦 Install dependencies
+        run: pip install requests
+
+      - name: 🔍 Run TryHackMe scraper
+        run: python .github/scripts/scraper.py
+
+      - name: 📝 Commit & push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git diff --cached --quiet || git commit -m "chore: update TryHackMe progress [$(date +'%Y-%m-%d')]"
+          git push
