@@ -94,5 +94,5 @@ Networking, Linux, Windows, Active Directory, Web Application Security, Cryptogr
 - [Web Application Basics](https://tryhackme.com/room/webapplicationbasics)
 - [SQL Fundamentals](https://tryhackme.com/room/sqlfundamentals)
 
-> _Last updated: 2026-06-30 04:05 UTC_
+> _Last updated: 2026-07-01 04:21 UTC_
 <!-- THM-STATS:END -->
